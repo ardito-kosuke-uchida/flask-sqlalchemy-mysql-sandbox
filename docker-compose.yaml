@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: sample
+      MYSQL_PASSWORD: secret
+      MYSQL_DATABASE: sample
+    command: >
+      mysqld
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+
+  api:
+    build: .
+    volumes:
+      - .:/code
+    working_dir: /code
+    environment:
+      MYSQL_USER: sample
+      MYSQL_PASSWORD: secret
+      MYSQL_DBNAME: secret
+      MYSQL_PORT: 3306
+      MYSQL_ENDPOINT: db
+    command:
+      - "python"
+      - "-m"
+      - "flask"
+      - "--debug"
+      - "run"
+      - "--host=0.0.0.0"
